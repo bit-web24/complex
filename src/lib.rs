@@ -1,5 +1,6 @@
 use std::fmt;
 use std::ops::{Add, Div, Mul, Sub};
+use std::cmp::{PartialEq, PartialOrd, Ordering};
 
 type CValue = f64;
 
@@ -82,5 +83,45 @@ impl fmt::Display for Complex {
                 self.re, self.im, self.re, self.im, self.re, self.re, self.im, self.im
             )
         }
+    }
+}
+
+impl PartialEq for Complex {
+    fn eq(&self, other: &Self) -> bool {
+        self.re == other.re && self.im == other.im
+    }
+    fn ne(&self, other:&Self) -> bool {
+        self.re != other.re && self.im != other.im
+    }
+}
+
+impl PartialOrd for Complex {
+    fn partial_cmp(&self, other:&Self) -> Option<Ordering>{
+        if self.re < other.re && self.im < other.im {
+            Some(Ordering::Less)
+        }
+        else if self.re > other.re && self.im > other.im {
+            Some(Ordering::Greater)
+        }
+        else if self.re <= other.re && self.im <= other.im {
+            None
+        }
+        else if self.re >= other.re && self.im >= other.im {
+            Some(Ordering::Equal)
+        } else {
+            None
+        }
+    }
+    fn lt(&self, other: &Self) -> bool {
+        matches!(self.partial_cmp(other), Some(Ordering::Less))
+    }
+    fn gt(&self, other: &Self) -> bool {
+        matches!(self.partial_cmp(other), Some(Ordering::Greater))
+    }
+    fn le(&self, other: &Self) -> bool {
+        matches!(self.partial_cmp(other), None)
+    }
+    fn ge(&self, other: &Self) -> bool {
+        matches!(self.partial_cmp(other), Some(Ordering::Equal))
     }
 }
